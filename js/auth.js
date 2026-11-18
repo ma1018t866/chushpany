@@ -1,70 +1,187 @@
-// This is a front-end-only authentication simulation required by the assignment.
+
+// Authentication Simulation using localStorage
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const phonePattern = /^\+?[0-9\s()-]{10,18}$/;
+const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+// Display errors under form fields
 function authError(form, field, message) {
-  const target = form.querySelector(`[data-error-for="${field}"]`);
+  const target = form.querySelector(
+    `[data-error-for="${field}"]`
+  );
   if (target) target.textContent = message;
 }
 
 function clearAuthErrors(form) {
-  form.querySelectorAll('.field-error').forEach((item) => { item.textContent = ''; });
+  form.querySelectorAll(".field-error").forEach((item) => {
+    item.textContent = "";
+  });
 }
 
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const phonePattern = /^\+?[0-9\s()\-]{10,18}$/;
+// Safely read user data
+function getUser() {
+  try {
+    return JSON.parse(localStorage.getItem("triad-user") || "null");
+  } catch {
+    return null;
+  }
+}
 
-document.querySelector('#signup-form')?.addEventListener('submit', (event) => {
+// SIGN UP
+document.querySelector("#signup-form")?.addEventListener("submit", (event) => {
   event.preventDefault();
+
   const form = event.currentTarget;
   clearAuthErrors(form);
+
   const data = new FormData(form);
-  const name = String(data.get('name')).trim();
-  const email = String(data.get('email')).trim().toLowerCase();
-  const phone = String(data.get('phone')).trim();
-  const password = String(data.get('password'));
+
+  const name = String(data.get("name") || "").trim();
+  const email = String(data.get("email") || "").trim().toLowerCase();
+  const phone = String(data.get("phone") || "").trim();
+  const password = String(data.get("password") || "");
+
   let valid = true;
-  if (!name) { authError(form, 'name', 'Name is required.'); valid = false; }
-  if (!emailPattern.test(email)) { authError(form, 'email', 'Enter a valid email.'); valid = false; }
-  if (!phonePattern.test(phone)) { authError(form, 'phone', 'Enter a valid phone number.'); valid = false; }
-  if (!/(?=.*[A-Za-z])(?=.*\d).{8,}/.test(password)) { authError(form, 'password', 'Use 8+ characters with a letter and a number.'); valid = false; }
-  const status = document.querySelector('#signup-status');
-  if (!valid) { status.textContent = ''; return; }
-  localStorage.setItem('triad-user', JSON.stringify({ name, email, phone, password }));
-  localStorage.setItem('triad-current-user', email);
-  status.textContent = 'Account created. Opening your profile...';
-  setTimeout(() => { window.location.href = 'profile.html'; }, 500);
-});
 
-document.querySelector('#login-form')?.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const form = event.currentTarget;
-  clearAuthErrors(form);
-  const data = new FormData(form);
-  const email = String(data.get('email')).trim().toLowerCase();
-  const password = String(data.get('password'));
-  const user = JSON.parse(localStorage.getItem('triad-user') || 'null');
-  if (!emailPattern.test(email)) authError(form, 'email', 'Enter a valid email.');
-  if (!password) authError(form, 'password', 'Password is required.');
-  if (!emailPattern.test(email) || !password) return;
-  if (!user || user.email !== email || user.password !== password) {
-    authError(form, 'password', 'Email or password is incorrect.');
+  // Name validation
+  if (name.length < 2) {
+    authError(form, "name", "Name must contain at least 2 characters.");
+    valid = false;
+  }
+
+  // Email validation
+  if (!emailPattern.test(email)) {
+    authError(form, "email", "Please enter a valid email address.");
+    valid = false;
+  }
+
+  // Phone validation
+  if (!phonePattern.test(phone) || phone.replace(/\D/g, "").length < 10) {
+    authError(form, "phone", "Please enter a valid phone number.");
+    valid = false;
+  }
+
+  // Password validation
+  if (!passwordPattern.test(password)) {
+    authError(
+      form,
+      "password",
+      "Password must contain 8+ characters, uppercase, lowercase and a number."
+    );
+    valid = false;
+  }
+
+  const status = document.querySelector("#signup-status");
+
+  if (!valid) {
+    status.textContent = "Please correct the errors above.";
     return;
   }
-  localStorage.setItem('triad-current-user', email);
-  document.querySelector('#login-status').textContent = 'Success. Opening your profile...';
-  setTimeout(() => { window.location.href = 'profile.html'; }, 500);
+
+  // Check if email already exists
+  const existingUser = getUser();
+
+  if (existingUser && existingUser.email === email) {
+    authError(form, "email", "This email is already registered.");
+    return;
+  }
+
+  // Save user information
+  const user = {
+    name: name,
+    email: email,
+    phone: phone,
+    password: password
+  };
+
+  localStorage.setItem("triad-user", JSON.stringify(user));
+  localStorage.setItem("triad-current-user", email);
+
+  status.textContent = "Account created successfully!";
+
+  setTimeout(() => {
+    window.location.href = "profile.html";
+  }, 500);
 });
 
-const profileName = document.querySelector('#profile-name');
+// LOG IN
+document.querySelector("#login-form")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  clearAuthErrors(form);
+
+  const data = new FormData(form);
+
+  const email = String(data.get("email") || "").trim().toLowerCase();
+  const password = String(data.get("password") || "");
+
+  let valid = true;
+
+  if (!emailPattern.test(email)) {
+    authError(form, "email", "Please enter a valid email address.");
+    valid = false;
+  }
+
+  if (!passwordPattern.test(password)) {
+    authError(form, "password", "Password must contain 8+ characters, uppercase, lowercase and a number.");
+    valid = false;
+  }
+
+  const status = document.querySelector("#login-status");
+
+  if (!valid) {
+    status.textContent = "Please correct the errors above.";
+    return;
+  }
+
+  const user = getUser();
+
+  // Check saved credentials
+  if (!user || user.email !== email || user.password !== password) {
+    authError(form, "password", "Incorrect email or password.");
+    return;
+  }
+
+  // Create active session
+  localStorage.setItem("triad-current-user", email);
+
+  status.textContent = "Login successful!";
+
+  setTimeout(() => {
+    window.location.href = "profile.html";
+  }, 500);
+});
+
+// PROFILE PAGE
+const profileName = document.querySelector("#profile-name");
+
 if (profileName) {
-  const user = JSON.parse(localStorage.getItem('triad-user') || 'null');
-  if (!user) window.location.href = 'login.html';
-  else {
+  const user = getUser();
+  const currentUser = localStorage.getItem("triad-current-user");
+
+  // Redirect if user is not logged in
+  if (!user || !currentUser || user.email !== currentUser) {
+    window.location.replace("login.html");
+  } else {
     profileName.textContent = user.name;
-    document.querySelector('#profile-email').textContent = user.email;
-    document.querySelector('#profile-avatar').textContent = user.name.charAt(0).toUpperCase();
+
+    document.querySelector("#profile-email").textContent = user.email;
+
+    document.querySelector("#profile-avatar").textContent =
+      user.name.charAt(0).toUpperCase();
+
+    const phone = document.querySelector("#profile-phone");
+
+    if (phone) {
+      phone.textContent = user.phone;
+    }
   }
 }
 
-document.querySelector('#logout-button')?.addEventListener('click', () => {
-  localStorage.removeItem('triad-current-user');
-  window.location.href = 'index.html';
+// LOG OUT
+document.querySelector("#logout-button")?.addEventListener("click", () => {
+  localStorage.removeItem("triad-current-user");
+  window.location.href = "login.html";
 });
