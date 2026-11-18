@@ -1104,3 +1104,58 @@ textarea:focus-visible {
         transition-duration: .01ms !important;
     }
 }
+
+
+/* CONTACT PAGE FIX */
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 35px;
+    align-items: start;
+}
+
+.contact-info,
+.contact-form-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 28px;
+}
+
+.contact-info h2 {
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+
+.contact-info p {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.contact-detail {
+    border-top: 1px solid var(--line);
+    padding: 15px 0;
+}
+
+.contact-detail .eyebrow {
+    margin-bottom: 5px;
+}
+
+.contact-form-card textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+@media (max-width: 650px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .contact-info,
+    .contact-form-card {
+        padding: 20px;
+    }
+}
+
