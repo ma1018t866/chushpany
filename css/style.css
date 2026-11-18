@@ -194,8 +194,29 @@ button {
   color: var(--text);
 }
 
+.button,
+.site-nav a,
+.theme-toggle,
+.filter-button,
+.person-card,
+.project-card {
+  transition: opacity .2s ease, color .2s ease, background .2s ease,
+    border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
 .button:hover {
   opacity: .82;
+  transform: translateY(-2px);
+}
+
+.theme-toggle:hover {
+  transform: rotate(15deg);
+}
+
+.person-card:hover,
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(32, 41, 56, .12);
 }
 
 .text-link {
@@ -1069,8 +1090,17 @@ textarea:focus-visible {
         gap: 28px;
     }
 
-    .contact-email {
+.contact-email {
         font-size: clamp(1.35rem, 6vw, 2rem);
         overflow-wrap: anywhere;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
     }
 }
