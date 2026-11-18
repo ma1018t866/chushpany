@@ -1,4 +1,4 @@
-# Triad Studio — team portfolio
+# Chushpany — team portfolio
 
 Responsive multi-page portfolio for Mansur, Yerasyl and Ansar.
 
