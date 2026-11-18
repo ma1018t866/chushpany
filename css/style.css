@@ -28,9 +28,10 @@ button { cursor: pointer; }
 .brand { font-weight: 700; letter-spacing: .08em; display: flex; gap: 9px; align-items: center; }
 .brand-mark { width: 28px; height: 28px; border-radius: 5px; background: var(--text); color: var(--bg); display: grid; place-items: center; }
 .brand-accent { color: var(--accent2); }
-.site-nav { display: flex; align-items: center; gap: 20px; color: var(--muted); font-size: .9rem; }
-.site-nav a:hover, .site-nav a.active { color: var(--text); }
-.nav-login { border-left: 1px solid var(--line); padding-left: 20px; }
+.site-nav { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .9rem; white-space: nowrap; }
+.site-nav a { display: inline-block; padding: 9px 12px; border: 1px solid transparent; border-radius: 6px; }
+.site-nav a:hover, .site-nav a.active { color: var(--text); background: var(--card); border-color: var(--line); }
+.nav-login { margin-left: 6px; }
 .theme-toggle { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--text); }
 .menu-toggle { display: none; background: none; border: 0; color: var(--text); font-size: 1.3rem; }
 .section { padding: 75px 0; }
