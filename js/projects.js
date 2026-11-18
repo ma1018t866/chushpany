@@ -1,3 +1,4 @@
+// Search and category filters update the cards without reloading the page.
 const cards = [...document.querySelectorAll('.project-card')];
 const searchInput = document.querySelector('#project-search');
 const filterButtons = document.querySelectorAll('.filter-button');
@@ -9,5 +10,6 @@ filterButtons.forEach((button) => { if (button.dataset.filter === activeFilter) 
 searchInput?.addEventListener('input', () => { localStorage.setItem('triad-project-search', searchInput.value); renderProjects(); });
 renderProjects();
 const apiResult = document.querySelector('#api-result');
+// The public GitHub request adds live project data and shows a friendly fallback on failure.
 async function loadGithubData() { try { const response = await fetch('https://api.github.com/repos/ma1018t866/chushpany'); if (!response.ok) throw new Error('GitHub returned an unavailable response.'); const repo = await response.json(); apiResult.innerHTML = `<div class="api-card"><span class="project-type">Live from GitHub</span><h3>${repo.name || 'chushpany'}</h3><p>${repo.description || 'A shared workspace for the Chushpany team.'}</p><div class="api-stats"><span>★ ${repo.stargazers_count ?? 0} stars</span><span>⑂ ${repo.forks_count ?? 0} forks</span><span>${repo.language || 'HTML / CSS / JS'}</span></div><br><a class="text-link" href="${repo.html_url}" target="_blank" rel="noreferrer">Open repository <span>↗</span></a></div>`; } catch (error) { apiResult.innerHTML = '<p class="api-error">The live GitHub signal is temporarily unavailable. The local project archive is still ready to explore.</p>'; } }
 if (apiResult) loadGithubData();

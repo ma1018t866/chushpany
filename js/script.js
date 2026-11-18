@@ -1,3 +1,4 @@
+// Keep the selected theme on every page by reading and writing localStorage.
 const savedTheme = localStorage.getItem('triad-theme') || 'light';
 document.documentElement.dataset.theme = savedTheme;
 document.querySelectorAll('[data-theme-toggle]').forEach((button) => {

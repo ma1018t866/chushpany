@@ -1,3 +1,4 @@
+// This is a front-end-only authentication simulation required by the assignment.
 function authError(form, field, message) {
   const target = form.querySelector(`[data-error-for="${field}"]`);
   if (target) target.textContent = message;

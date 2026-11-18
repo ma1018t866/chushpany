@@ -24,4 +24,4 @@ Then open `http://localhost:4173/`.
 
 ## Assets
 
-The Mansur and Yerasyl portraits are stored in `assets/team/`. Ansar currently uses a styled initials placeholder because `IMG_5330.heic` was not available in the provided Downloads folder. Replace the placeholder in `ansar.html` and `index.html` after adding the portrait to `assets/team/ansar.jpg`.
+The three team portraits are stored in `images/team/`.
