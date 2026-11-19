@@ -64,3 +64,7 @@ async function loadGithubData() {
 }
 
 if (apiResult) loadGithubData();
+const timeResult = document.querySelector('#time-result');
+// TimeAPI.io adds a second live public API that fits the team's Almaty location.
+async function loadAlmatyTime() { try { const response = await fetch('https://timeapi.io/api/time/current/zone?timeZone=Asia/Almaty'); if (!response.ok) throw new Error('Time API unavailable.'); const timeData = await response.json(); const date = new Date(timeData.dateTime); timeResult.innerHTML = `<div class="api-card"><span class="project-type">Live from TimeAPI.io</span><h3>${date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</h3><p>${date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p><div class="api-stats"><span>Almaty</span><span>${timeData.timeZone}</span></div></div>`; } catch (error) { timeResult.innerHTML = '<p class="api-error">The time service is temporarily unavailable. Please try again later.</p>'; } }
+if (timeResult) loadAlmatyTime();
